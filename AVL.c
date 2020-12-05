@@ -1,3 +1,5 @@
+//Gabriel Rocha Silveira
+//AED 2020 Semana 7 Arvore AVL
 #include <stdio.h>
 #include <stdlib.h>
 #include <time.h>
@@ -17,18 +19,25 @@ no *insere(no *raiz, int val);
 no *inicializa();
 int altura (no *p);
 no *criaNo(int val);
+int EhArvoreArvl(no *pRaiz);
 
 
 int main(){
     no *raiz = inicializa();
-    int n, valor;
+    int n, valor, ok;
     printf("Informe o numero de elementos que deseja: ");
     scanf("%d", &n);
     srand(time(0));
     for(int i = 0 ; i<n ; i++){
+        //scanf("%d", &valor); // Utilizado para efetuar os testes do segundo cenario (efetuando os testes, percebe-se uma AVL correta)
         valor = (rand() % 100);
         raiz = insere(raiz, valor);
     }
+    ok = EhArvoreArvl(raiz);
+    if(ok == 1)
+        printf("Deu bom, sua AVL estah OK!\n");
+    else
+        printf("IHH deu ruim, sua AVL estah desbalanciada!!!\n");
     return 0;
 }
 
@@ -130,3 +139,19 @@ no *insere(no *raiz, int val){
     return raiz;            
 }
 // } Insere
+
+// Testa se esta balanceada
+int EhArvoreArvl(no *pRaiz){
+    int fb;
+    if (pRaiz == NULL)
+        return 1;
+    if (!EhArvoreArvl(pRaiz->esq))
+        return 0;
+    if (!EhArvoreArvl(pRaiz->dir))
+        return 0;
+    fb = (altura(pRaiz->esq) - altura(pRaiz->dir));
+    if ( ( fb > 1 ) || ( fb < -1) )
+        return 0;
+    else
+        return 1;
+}
