@@ -19,7 +19,8 @@ no *insere(no *raiz, int val);
 no *inicializa();
 int altura (no *p);
 no *criaNo(int val);
-int EhArvoreArvl(no *pRaiz);
+int EhArvoreAvl(no *pRaiz);
+no *arv_libera(no *raiz);
 
 
 int main(){
@@ -33,11 +34,13 @@ int main(){
         valor = (rand() % 100);
         raiz = insere(raiz, valor);
     }
-    ok = EhArvoreArvl(raiz);
+    ok = EhArvoreAvl(raiz);
     if(ok == 1)
         printf("Deu bom, sua AVL estah OK!\n");
     else
         printf("IHH deu ruim, sua AVL estah desbalanciada!!!\n");
+    
+    raiz = arv_libera(raiz); //Libera a memoria 
     return 0;
 }
 
@@ -61,7 +64,7 @@ no *criaNo(int val){
 }
 
 // Rotacoes simples {
-no *esquerda(no *p){ //usar no *esquerdo???
+no *esquerda(no *p){ 
     no *aux;
     aux = p->dir;
     p->dir = aux->esq;
@@ -113,7 +116,7 @@ no *direitaesquerda (no *p){
 no *insere(no *raiz, int val){
     if(!raiz)
     return criaNo(val);
-    if(val < raiz->valor){ //verificar, talvez esteja aq
+    if(val < raiz->valor){ 
         raiz->esq = insere(raiz->esq, val);
         if(altura(raiz->esq) - altura(raiz->dir) == 2){
             if(val < raiz->esq->valor)
@@ -140,18 +143,28 @@ no *insere(no *raiz, int val){
 }
 // } Insere
 
-// Testa se esta balanceada
-int EhArvoreArvl(no *pRaiz){
+// Testa se estah balanceada
+int EhArvoreAvl(no *pRaiz){
     int fb;
     if (pRaiz == NULL)
         return 1;
-    if (!EhArvoreArvl(pRaiz->esq))
+    if (!EhArvoreAvl(pRaiz->esq))
         return 0;
-    if (!EhArvoreArvl(pRaiz->dir))
+    if (!EhArvoreAvl(pRaiz->dir))
         return 0;
     fb = (altura(pRaiz->esq) - altura(pRaiz->dir));
     if ( ( fb > 1 ) || ( fb < -1) )
         return 0;
     else
         return 1;
+}
+
+// Libera memoria
+no *arv_libera(no *raiz){
+    if (raiz != NULL){
+        arv_libera(raiz->esq); 
+        arv_libera(raiz->dir); 
+        free(raiz);
+    }
+    return NULL;
 }
